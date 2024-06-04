@@ -1,10 +1,13 @@
 local chestStatus = {} -- Table to keep track of which chests are full
 local startX, startY = 6, 1 -- Starting position of the turtle
 
-local columns, rows = 6, 3
+local size = {} -- Table to keep track of the size of chest gride
+size[x], size[y] = 6, 3
 
--- Function to check if a chest has empty slots
-local function checkEmpty()
+local chests = {}
+
+-- Function to check if a chest has open space
+local function hasSpace()
     local success, data = turtle.inspect()
     if success and data.name == "minecraft:chest" then
         for slot = 1, 16 do
@@ -27,13 +30,15 @@ local function depositItems()
     end
 end
 
-local function column()
-	for c = 1, columns do
-		turtle.up()
-		if checkEmpty() then
-			depositItems()
-			chestStatus[c] = true
-		else
-			chestStatus[c] = false
-		end
-	end
+local function setChest(x, y)
+	chests[x][y] = math.random(0, 1) == 1
+end
+
+-- random boolean generator
+local function randomBool()
+	return math.random(0, 1) == 1
+end
+
+thingX, thingY = 1, 1
+setChest(thingX, thingY)
+print(thingX, thingY)
