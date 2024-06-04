@@ -136,6 +136,7 @@ else
 end
 --]]
 
+--[[
 turtle.turnLeft()
 turtle.turnLeft()
 turtle.back()
@@ -143,3 +144,4 @@ turtle.down()
 turtle.turnLeft()
 for i = 1, 2 do turtle.forward() end
 depositItems() -- needs replaced with a chestFiller function set
+--]]
