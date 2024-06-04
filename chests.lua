@@ -29,6 +29,13 @@ local function turnTo(targetHeading) -- takes in a number
             currentDirection = targetHeading
         end
     end
+	while targetHeading > currentDirection do
+		turtle.turnRight()
+		currentDirection = currentDirection + 1
+		if currentDirection == targetHeading then
+			currentDirection = targetHeading
+		end
+	end
 end
 
 local function moveTo(targetX, targetY, targetZ)
