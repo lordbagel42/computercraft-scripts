@@ -1,5 +1,5 @@
 local x, y, z = gps.locate()
-local startX, startY, startZ = x, y, z
+local startX, startY, startZ = 100, 71, -31
 local quarryChests = {{
     name = "chest1",
     x = 99,
@@ -167,7 +167,7 @@ local function emptyQuarryChest(chest)
 	if quarryChests[chest].empty then
 		print("Chest " .. chest .. ": empty")
 	else
-		print("Chest " .. chest .. ": full")
+		print("Chest " .. chest .. ": has items")
 	end
 end
 
