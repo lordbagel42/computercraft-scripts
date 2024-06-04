@@ -52,7 +52,10 @@ turtle.turnRight()
 turtle.forward()
 local chest1 = isChestEmpty()
 if not chest1 then
+	print("Chest 1: contains items.")
 	emptyChest()
+else
+	print("Chest 1: Empty")
 end
 
 turtle.back()
