@@ -1,93 +1,81 @@
--- Define the array of points
-local points = {
-    {x = 100, y = 71, z = -31},
-    {x = 99, y = 72, z = -33},
-    {x = 99, y = 72, z = -41},
-	{x = 99, y = 72, z = -49},
-	{x = 99, y = 72, z = -57},
-    -- Add more points as needed
-}
+-- Function to parse command-line arguments
+local function parseArgs()
+    if #arg < 3 then
+        print("Usage: goTo <x> <y> <z>")
+        return nil
+    end
 
--- Function to get the turtle's current position
-function getCurrentPosition()
+    local targetX = tonumber(arg[1])
+    local targetY = tonumber(arg[2])
+    local targetZ = tonumber(arg[3])
+
+    if targetX == nil or targetY == nil or targetZ == nil then
+        print("Invalid coordinates provided")
+        return nil
+    end
+
+    return targetX, targetY, targetZ
+end
+
+-- Function to get the current position using GPS
+local function getCurrentPosition()
     local x, y, z = gps.locate()
-    if not x then
-        error("GPS signal not found")
+    if x == nil or y == nil or z == nil then
+        print("Unable to determine current position. Make sure you're in range of GPS.")
+        return nil
     end
-    return {x = x, y = y, z = z}
+    return x, y, z
 end
 
--- Function to face the turtle in a specific direction
--- 0 = north, 1 = east, 2 = south, 3 = west
-function faceDirection(direction)
-    local currentDirection = 0 -- Assume turtle starts facing north
-    while currentDirection ~= direction do
-        turtle.turnRight()
-        currentDirection = (currentDirection + 1) % 4
+-- Function to move the turtle to the specified coordinates
+local function moveTo(targetX, targetY, targetZ)
+    local currentX, currentY, currentZ = getCurrentPosition()
+    if currentX == nil then
+        return
     end
-end
 
--- Function to move the turtle in the x direction
-function moveX(targetX, currentPos)
-    if targetX > currentPos.x then
-        faceDirection(1) -- face east
-        for i = currentPos.x + 1, targetX do
+    -- Move in the X direction
+    while currentX ~= targetX do
+        if currentX < targetX then
             turtle.forward()
-        end
-    elseif targetX < currentPos.x then
-        faceDirection(3) -- face west
-        for i = targetX, currentPos.x - 1 do
-            turtle.forward()
+            currentX = currentX + 1
+        else
+            turtle.back()
+            currentX = currentX - 1
         end
     end
-end
 
--- Function to move the turtle in the y direction (vertical)
-function moveY(targetY, currentPos)
-    if targetY > currentPos.y then
-        for i = currentPos.y + 1, targetY do
+    -- Move in the Y direction
+    while currentY ~= targetY do
+        if currentY < targetY then
             turtle.up()
-        end
-    elseif targetY < currentPos.y then
-        for i = targetY, currentPos.y - 1 do
+            currentY = currentY + 1
+        else
             turtle.down()
+            currentY = currentY - 1
         end
     end
-end
 
--- Function to move the turtle in the z direction
-function moveZ(targetZ, currentPos)
-    if targetZ > currentPos.z then
-        faceDirection(0) -- face north
-        for i = currentPos.z + 1, targetZ do
+    -- Move in the Z direction
+    while currentZ ~= targetZ do
+        if currentZ < targetZ then
+            turtle.turnRight()
             turtle.forward()
-        end
-    elseif targetZ < currentPos.z then
-        faceDirection(2) -- face south
-        for i = targetZ, currentPos.z - 1 do
+            turtle.turnLeft()
+            currentZ = currentZ + 1
+        else
+            turtle.turnLeft()
             turtle.forward()
+            turtle.turnRight()
+            currentZ = currentZ - 1
         end
     end
+
+    print("Arrived at destination!")
 end
 
--- Function to move the turtle to a specific point
-function moveToPoint(target)
-    local currentPos = getCurrentPosition()
-
-    -- Move in x direction
-    moveX(target.x, currentPos)
-    currentPos.x = target.x
-    
-    -- Move in y direction (vertical)
-    moveY(target.y, currentPos)
-    currentPos.y = target.y
-    
-    -- Move in z direction
-    moveZ(target.z, currentPos)
-    currentPos.z = target.z
-end
-
--- Main program loop
-for i, point in ipairs(points) do
-    moveToPoint(point)
+-- Main program
+local targetX, targetY, targetZ = parseArgs()
+if targetX and targetY and targetZ then
+    moveTo(targetX, targetY, targetZ)
 end
