@@ -10,17 +10,24 @@ local chests = {
 -- north = 0, east = 1, south = 2, west = 3
 local heading = 2
 
+local startHeading = heading
+
 local function turnTo(targetHeading)
-	while heading < targetHeading do
+	local diff = targetHeading - heading
+	if diff < 0 then
+		diff = diff + 4
+	end
+
+	if diff == 1 then
 		turtle.turnRight()
-		print(heading, targetHeading)
-		heading = heading + 1
-	end
-	while heading > targetHeading do
+	elseif diff == 2 then
+		turtle.turnRight()
+		turtle.turnRight()
+	elseif diff == 3 then
 		turtle.turnLeft()
-		print(heading, targetHeading)
-		heading = heading - 1
 	end
+
+	heading = targetHeading
 end
 
 local function goTo(targetX, targetY, targetZ)
@@ -120,4 +127,6 @@ local function setup()
 end
 
 setup()
+goTo(99, 72, -33)
 goTo(startX, startY, startZ)
+turnTo(startHeading)
