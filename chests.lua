@@ -7,6 +7,7 @@ local chests = {
 	{ name = "chest4", x = 99, y = 72, z = -57 }
 }
 
+
 -- north = 0, east = 1, south = 2, west = 3
 local heading = 2
 
@@ -127,6 +128,13 @@ local function setup()
 end
 
 setup()
-goTo(99, 72, -33)
+goTo(chests[1].x, chests[1].y, chests[1].z)
+turnTo(3)
+goTo(chests[2].x, chests[2].y, chests[2].z)
+turnTo(3)
+goTo(chests[3].x, chests[3].y, chests[3].z)
+turnTo(3)
+goTo(chests[4].x, chests[4].y, chests[4].z)
+turnTo(3)
 goTo(startX, startY, startZ)
 turnTo(startHeading)
