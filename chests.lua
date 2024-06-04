@@ -20,37 +20,29 @@ function depositItems()
     end
 end
 
--- Save the current position and orientation
-local startX, startY, startZ = gps.locate()
-local startDirection = turtle.getFacing()
+-- Function to move the turtle back to its starting position and orientation
+function returnToStart()
+    -- Move back to the starting position
+    turtle.back()
+    turtle.turnLeft()
+    turtle.down()
+    turtle.forward()
+    turtle.forward()
+    turtle.turnRight()
+end
 
--- Move backward twice
+-- Initial steps: move backward twice, up one, turn right, move forward one
 turtle.back()
 turtle.back()
-
--- Move up one
 turtle.up()
-
--- Turn right
 turtle.turnRight()
-
--- Move forward one
 turtle.forward()
 
 -- Empty as much of the chest in front of it as possible
 emptyChest()
 
 -- Return to the starting position
-turtle.back()
-turtle.turnLeft()
-turtle.down()
-turtle.forward()
-turtle.forward()
+returnToStart()
 
 -- Deposit items into the chest in front of the starting position
 depositItems()
-
--- Restore the initial orientation (if necessary)
-while turtle.getFacing() ~= startDirection do
-    turtle.turnRight()
-end
