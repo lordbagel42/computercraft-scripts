@@ -56,30 +56,34 @@ end
 
 -- Function to move the turtle to a specific location
 local function goTo(targetX, targetY, targetZ)
+	local x, y, z = gps.locate()
     if z < targetZ then
         turnTo(2) -- north
         while z < targetZ do
+			print("Target Z: " .. targetZ .. " Current Z: " .. z)
             turtle.forward()
             x, y, z = gps.locate()
         end
     elseif z > targetZ then
         turnTo(0) -- south
         while z > targetZ do
+			print("Target Z: " .. targetZ .. " Current Z: " .. z)
             turtle.forward()
             x, y, z = gps.locate()
         end
     end
 
-    local x, y, z = gps.locate()
     if x < targetX then
         turnTo(1) -- east
         while x < targetX do
+			print("Target X: " .. targetX .. " Current X: " .. x)
             turtle.forward()
             x, y, z = gps.locate()
         end
     elseif x > targetX then
         turnTo(3) -- west
         while x > targetX do
+			print("Target X: " .. targetX .. " Current X: " .. x)
             turtle.forward()
             x, y, z = gps.locate()
         end
@@ -88,12 +92,14 @@ local function goTo(targetX, targetY, targetZ)
     if y < targetY then
         -- no turning
         while y < targetY do
+			print("Target Y: " .. targetY .. " Current Y: " .. y)
             turtle.up()
             x, y, z = gps.locate()
         end
     elseif y > targetY then
         -- no turning
         while y > targetY do
+			print("Target Y: " .. targetY .. " Current Y: " .. y)
             turtle.down()
             x, y, z = gps.locate()
         end
