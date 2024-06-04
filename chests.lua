@@ -178,6 +178,7 @@ local function emptyQuarryChest(chest)
         emptyChest()
         home()
         depositItems()
+		goTo(100, 72, -33)
 		emptyQuarryChest(chest)
     end
 end
