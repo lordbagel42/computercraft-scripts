@@ -2,7 +2,8 @@ local chestStatus = {} -- Table to keep track of which chests are full
 local startX, startY = 6, 1 -- Starting position of the turtle
 
 local size = {} -- Table to keep track of the size of chest gride
-size[x], size[y] = 6, 3
+
+local row, col = 6, 3 -- Number of rows and columns in the chest grid
 
 local chests = {}
 
@@ -30,15 +31,18 @@ local function depositItems()
     end
 end
 
-local function setChest(x, y)
-	chests[x][y] = math.random(0, 1) == 1
-end
-
 -- random boolean generator
 local function randomBool()
 	return math.random(0, 1) == 1
 end
 
-thingX, thingY = 1, 1
-setChest(thingX, thingY)
-print(thingX, thingY)
+for i = 1, row do
+	chests[i] = {}
+	for j = 1, col do
+		chests[i][j] = randomBool
+	end
+end
+
+for i,line in ipairs(chests) do
+	print(line)
+end
