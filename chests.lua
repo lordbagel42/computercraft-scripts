@@ -1,4 +1,5 @@
 local x, y, z = gps.locate()
+local startX, startY, startZ = x, y, z
 local chests = {
 	{ name = "chest1", x = 99, y = 72, z = -33 },
 	{ name = "chest2", x = 99, y = 72, z = -41 },
@@ -118,30 +119,5 @@ local function setup()
 	goTo(100, 72, -33)
 end
 
---[[
-turtle.back()
-turtle.back()
-turtle.up()
-turtle.turnRight()
-turtle.turnRight()
---]]
-
---[[
-local chest1 = isChestEmpty()
-if not chest1 then
-	print("Chest 1: contains items.")
-	emptyChest()
-else
-	print("Chest 1: Empty")
-end
---]]
-
---[[
-turtle.turnLeft()
-turtle.turnLeft()
-turtle.back()
-turtle.down()
-turtle.turnLeft()
-for i = 1, 2 do turtle.forward() end
-depositItems() -- needs replaced with a chestFiller function set
---]]
+setup()
+goTo(startX, startY, startZ)
