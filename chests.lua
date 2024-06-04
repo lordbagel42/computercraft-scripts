@@ -1,80 +1,91 @@
--- Define the turtle's starting position
-local startX, startY, startZ = 0, 0, 0
-
--- Output chest positions relative to the starting position
-local outputChests = {
-    {x = 2, y = 1, z = 2},
-    {x = 10, y = 1, z = 2},
-    {x = 18, y = 1, z = 2},
-    {x = 26, y = 1, z = 2}
+-- Define the array of points
+local points = {
+    {x = 10, y = 64, z = 10},
+    {x = 15, y = 70, z = 20},
+    {x = 5, y = 60, z = 5},
+    -- Add more points as needed
 }
 
--- Function to move the turtle to a specified position
-function moveTo(x, y, z)
-    local currentX, currentY, currentZ = gps.locate()
+-- Function to get the turtle's current position
+function getCurrentPosition()
+    local x, y, z = gps.locate()
+    if not x then
+        error("GPS signal not found")
+    end
+    return {x = x, y = y, z = z}
+end
 
-    -- Move along the x-axis
-    while currentX < x do
-        turtle.forward()
-        currentX = currentX + 1
-    end
-    while currentX > x do
-        turtle.back()
-        currentX = currentX - 1
-    end
-
-    -- Move along the y-axis (up and down)
-    while currentY < y do
-        turtle.up()
-        currentY = currentY + 1
-    end
-    while currentY > y do
-        turtle.down()
-        currentY = currentY - 1
-    end
-
-    -- Move along the z-axis
-    while currentZ < z do
-        turtle.forward()
-        currentZ = currentZ + 1
-    end
-    while currentZ > z do
-        turtle.back()
-        currentZ = currentZ - 1
+-- Function to face the turtle in a specific direction
+-- 0 = north, 1 = east, 2 = south, 3 = west
+function faceDirection(direction)
+    local currentDirection = 0 -- Assume turtle starts facing north
+    while currentDirection ~= direction do
+        turtle.turnRight()
+        currentDirection = (currentDirection + 1) % 4
     end
 end
 
--- Function to collect items from an output chest
-function collectItemsFromChest()
-    for i = 1, 16 do
-        turtle.suck()
+-- Function to move the turtle in the x direction
+function moveX(targetX, currentPos)
+    if targetX > currentPos.x then
+        faceDirection(1) -- face east
+        for i = currentPos.x + 1, targetX do
+            turtle.forward()
+        end
+    elseif targetX < currentPos.x then
+        faceDirection(3) -- face west
+        for i = targetX, currentPos.x - 1 do
+            turtle.forward()
+        end
     end
 end
 
--- Function to deposit items into storage chests
-function depositItemsToStorage()
-    for i = 1, 16 do
-        turtle.select(i)
-        turtle.drop()
+-- Function to move the turtle in the y direction (vertical)
+function moveY(targetY, currentPos)
+    if targetY > currentPos.y then
+        for i = currentPos.y + 1, targetY do
+            turtle.up()
+        end
+    elseif targetY < currentPos.y then
+        for i = targetY, currentPos.y - 1 do
+            turtle.down()
+        end
     end
+end
+
+-- Function to move the turtle in the z direction
+function moveZ(targetZ, currentPos)
+    if targetZ > currentPos.z then
+        faceDirection(0) -- face north
+        for i = currentPos.z + 1, targetZ do
+            turtle.forward()
+        end
+    elseif targetZ < currentPos.z then
+        faceDirection(2) -- face south
+        for i = targetZ, currentPos.z - 1 do
+            turtle.forward()
+        end
+    end
+end
+
+-- Function to move the turtle to a specific point
+function moveToPoint(target)
+    local currentPos = getCurrentPosition()
+
+    -- Move in x direction
+    moveX(target.x, currentPos)
+    currentPos.x = target.x
+    
+    -- Move in y direction (vertical)
+    moveY(target.y, currentPos)
+    currentPos.y = target.y
+    
+    -- Move in z direction
+    moveZ(target.z, currentPos)
+    currentPos.z = target.z
 end
 
 -- Main program loop
-while true do
-    for _, chestPos in ipairs(outputChests) do
-        -- Move to the output chest
-        moveTo(chestPos.x, chestPos.y, chestPos.z)
-
-        -- Collect items from the chest
-        collectItemsFromChest()
-
-        -- Return to the starting position
-        moveTo(startX, startY, startZ)
-
-        -- Deposit items into the storage chests
-        depositItemsToStorage()
-    end
-
-    -- Wait for a while before collecting items again
-    os.sleep(60) -- Wait for 60 seconds
+for i, point in ipairs(points) do
+    moveToPoint(point)
 end
