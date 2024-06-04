@@ -23,6 +23,20 @@ local function turnTo(targetHeading)
 end
 
 local function goTo(targetX, targetY, targetZ)
+	if z < targetZ then
+		turnTo(2) -- north
+		while z < targetZ do
+			turtle.forward()
+			x, y, z = gps.locate()
+		end
+	elseif z > targetZ then
+		turnTo(0) -- south
+		while z > targetZ do
+			turtle.forward()
+			x, y, z = gps.locate()
+		end
+	end
+
 	local x, y, z = gps.locate()
 	if x < targetX then
 		turnTo(1) -- east
@@ -48,20 +62,6 @@ local function goTo(targetX, targetY, targetZ)
 		-- no turning
 		while y > targetY do
 			turtle.down()
-			x, y, z = gps.locate()
-		end
-	end
-
-	if z < targetZ then
-		turnTo(2) -- north
-		while z < targetZ do
-			turtle.forward()
-			x, y, z = gps.locate()
-		end
-	elseif z > targetZ then
-		turnTo(0) -- south
-		while z > targetZ do
-			turtle.forward()
 			x, y, z = gps.locate()
 		end
 	end
