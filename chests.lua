@@ -29,7 +29,8 @@ local quarryChests = {{
 local heading = 2 -- north = 0, east = 1, south = 2, west = 3
 local chestDirection = 3 -- Direction to face the chests
 local chestStatus = {} -- Table to keep track of which chests are full
-local storageX, storageY = 6, 1 -- Starting position of the turtle
+local storageX, storageY, storageZ = 105, 71, -31 -- Coordinates of the bottom left corner: 1, 1
+local storageStartX, storageStartZ = 6, 1 -- Starting position of the turtle
 local row, col = 6, 3 -- Number of rows and columns in the chest grid
 local chests = {} -- Table to keep track of the size/status of chest grid
 
@@ -183,7 +184,7 @@ local function emptyQuarryChest(chest)
     end
 end
 
--- Function to deposit items into the chests
+-- Function to deposit items into chest directly in front of the turtle
 local function depositItems()
     local success, data = turtle.inspect()
     if success and data.name == "minecraft:chest" then
@@ -192,6 +193,14 @@ local function depositItems()
             turtle.drop()
         end
     end
+end
+
+-- Function to move to a specific chest in the grid
+local function getChestPos(chestX, chestY)
+	local actualX = storageX - chestX -- left to right
+	local actualY = storageY + chestY -- up and down
+	local actualZ = storageZ -- z of in front of the chests
+	return actualX, actualY, actualZ
 end
 
 -- setup functions
