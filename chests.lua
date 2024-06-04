@@ -164,7 +164,7 @@ local function depositItems()
 end
 
 local function home()
-    goTo(storageX, storageY, startZ)
+    goTo(startX, startY, startZ)
     turnTo(startHeading)
 end
 
@@ -173,11 +173,12 @@ local function emptyQuarryChest(chest)
     goTo(quarryChests[chest].x, quarryChests[chest].y, quarryChests[chest].z)
     turnTo(chestDirection)
     quarryChests[chest].empty = isChestEmpty()
-    while not quarryChests[chest].empty do
+    if not quarryChests[chest].empty then
         print("Chest " .. chest .. " still has items")
         emptyChest()
         home()
         depositItems()
+		emptyQuarryChest(chest)
     end
 end
 
