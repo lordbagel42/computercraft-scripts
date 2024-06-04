@@ -61,7 +61,7 @@ local function goTo(targetX, targetY, targetZ)
 	elseif z > targetZ then
 		turnTo(0) -- south
 		while z > targetZ do
-			turtle.back()
+			turtle.forward()
 			x, y, z = gps.locate()
 		end
 	end
