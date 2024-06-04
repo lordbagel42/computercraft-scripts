@@ -27,14 +27,24 @@ local function getCurrentPosition()
     return x, y, z
 end
 
--- Function to face a specific direction
-local function faceDirection(targetDir)
-    local directions = {north = 0, east = 1, south = 2, west = 3}
-    local currentDir = turtle.getHeading()
-
-    while currentDir ~= targetDir do
+-- Function to turn the turtle to face a specific direction
+local function turnTo(direction)
+    local currentDirection = "south"  -- Assuming the turtle starts facing south
+    local directions = {"north", "east", "south", "west"}
+    local dirMap = {north=0, east=1, south=2, west=3}
+    
+    local function turnLeft()
+        turtle.turnLeft()
+        currentDirection = directions[(dirMap[currentDirection] - 1) % 4 + 1]
+    end
+    
+    local function turnRight()
         turtle.turnRight()
-        currentDir = (currentDir + 1) % 4
+        currentDirection = directions[(dirMap[currentDirection] + 1) % 4 + 1]
+    end
+    
+    while currentDirection ~= direction do
+        turnRight()
     end
 end
 
@@ -46,53 +56,6 @@ local function moveTo(targetX, targetY, targetZ)
     end
 
     -- Move in the X direction
-    if currentX < targetX then
-        faceDirection(1)  -- East
-    else
-        faceDirection(3)  -- West
-    end
     while currentX ~= targetX do
         if currentX < targetX then
-            turtle.forward()
-            currentX = currentX + 1
-        else
-            turtle.back()
-            currentX = currentX - 1
-        end
-    end
-
-    -- Move in the Z direction
-    if currentZ < targetZ then
-        faceDirection(0)  -- North
-    else
-        faceDirection(2)  -- South
-    end
-    while currentZ ~= targetZ do
-        if currentZ < targetZ then
-            turtle.forward()
-            currentZ = currentZ + 1
-        else
-            turtle.back()
-            currentZ = currentZ - 1
-        end
-    end
-
-    -- Move in the Y direction
-    while currentY ~= targetY do
-        if currentY < targetY then
-            turtle.up()
-            currentY = currentY + 1
-        else
-            turtle.down()
-            currentY = currentY - 1
-        end
-    end
-
-    print("Arrived at destination!")
-end
-
--- Main program
-local targetX, targetY, targetZ = parseArgs()
-if targetX and targetY and targetZ then
-    moveTo(targetX, targetY, targetZ)
-end
+            turnTo("east
