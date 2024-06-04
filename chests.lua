@@ -12,10 +12,12 @@ local heading = 2
 local function turnTo(targetHeading)
 	while heading < targetHeading do
 		turtle.turnRight()
+		print(heading, targetHeading)
 		heading = heading + 1
 	end
 	while heading > targetHeading do
 		turtle.turnLeft()
+		print(heading, targetHeading)
 		heading = heading - 1
 	end
 end
