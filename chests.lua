@@ -28,10 +28,11 @@ local quarryChests = {{
 
 local heading = 2 -- north = 0, east = 1, south = 2, west = 3
 local chestDirection = 3 -- Direction to face the chests
+local storageDirection = 2 -- Direction to face the storage
 local chestStatus = {} -- Table to keep track of which chests are full
 local storageStartX, storageStartZ = 6, 1 -- Starting position of the turtle
 local row, col = 6, 3 -- Number of rows and columns in the chest grid
-local storageX, storageY, storageZ = startX - row, startY, startZ -- Coordinates of the bottom left corner: 1, 1
+local storageX, storageY, storageZ = startX + row, startY - 1, startZ -- Coordinates of the bottom left corner: 1, 1
 local chests = {} -- Table to keep track of the size/status of chest grid
 
 local startHeading = heading
@@ -197,10 +198,33 @@ end
 
 -- Function to move to a specific chest in the grid
 local function getChestPos(chestX, chestY)
+	if chestX > row or chestY > col then
+		error("Out of bounds: " .. chestX .. ", " .. chestY)
+	end
+
 	local actualX = storageX - chestX -- left to right
 	local actualY = storageY + chestY -- up and down
 	local actualZ = storageZ -- z of in front of the chests
 	return actualX, actualY, actualZ
+end
+
+local function moveToChest(chestX, chestY)
+	actualX, actualY, actualZ = getChestPos(chestX, chestY)
+	goTo(actualX, actualY, actualZ)
+	turnTo(storageDirection)
+end
+
+local function depositStorage()
+	for i = 1, row do
+		for j = 1, col do
+			if chests[i][j].empty then
+				moveToChest(i, j)
+				depositItems()
+				print("Chest " .. i .. ", " .. j .. " has available space")
+			end
+			print("Chest " .. i .. ", " .. j .. " is full")
+		end
+	end
 end
 
 -- setup functions
