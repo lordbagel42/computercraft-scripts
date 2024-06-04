@@ -212,6 +212,8 @@ local function moveToChest(chestX, chestY)
 	actualX, actualY, actualZ = getChestPos(chestX, chestY)
 	goTo(actualX, actualY, actualZ)
 	turnTo(storageDirection)
+	local empty = isChestEmpty(chestX, chestY)
+	chests[chestX][chestY].empty = empty
 end
 
 local function depositStorage()
@@ -232,7 +234,7 @@ local function setup()
     for i = 1, row do
         chests[i] = {}
         for j = 1, col do
-            chests[i][j] = randomBool
+            chests[i][j] = false
         end
     end
     print("Table Initialized")
