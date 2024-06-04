@@ -1,8 +1,10 @@
 -- Define the array of points
 local points = {
-    {x = 10, y = 64, z = 10},
-    {x = 15, y = 70, z = 20},
-    {x = 5, y = 60, z = 5},
+    {x = 100, y = 71, z = -31},
+    {x = 99, y = 72, z = -33},
+    {x = 99, y = 72, z = -41},
+	{x = 99, y = 72, z = -49},
+	{x = 99, y = 72, z = -57},
     -- Add more points as needed
 }
 
