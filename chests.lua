@@ -1,44 +1,56 @@
-local x, y, z = gps.locate()
-
--- north = 0, east = 1, south = 2, west = 3
-local currentDirection = 2 -- south
-
-local function parseArgs()
-    if #arg < 3 then
-        print("Usage: goTo <x> <y> <z>")
-        return nil
-    end
-
-    local targetX = tonumber(arg[1])
-    local targetY = tonumber(arg[2])
-    local targetZ = tonumber(arg[3])
-
-    if targetX == nil or targetY == nil or targetZ == nil then
-        print("Invalid coordinates provided")
-        return nil
-    end
-
-    return targetX, targetY, targetZ
-end
-
-local function turnTo(targetHeading) -- takes in a number
-    while targetHeading < currentDirection do
-        turtle.turnLeft()
-        currentDirection = currentDirection - 1
-        if currentDirection == targetHeading then
-            currentDirection = targetHeading
+-- Function to check if there's a chest in front and empty it
+function emptyChest()
+    local success, data = turtle.inspect()
+    if success and data.name == "minecraft:chest" then
+        for slot = 1, 16 do
+            turtle.select(slot)
+            turtle.suck()
         end
     end
-	while targetHeading > currentDirection do
-		turtle.turnRight()
-		currentDirection = currentDirection + 1
-		if currentDirection == targetHeading then
-			currentDirection = targetHeading
-		end
-	end
 end
 
-local function moveTo(targetX, targetY, targetZ)
+-- Function to deposit items into the chest in front
+function depositItems()
+    local success, data = turtle.inspect()
+    if success and data.name == "minecraft:chest" then
+        for slot = 1, 16 do
+            turtle.select(slot)
+            turtle.drop()
+        end
+    end
 end
 
-local targetX, targetY, targetZ = parseArgs()
+-- Save the current position and orientation
+local startX, startY, startZ = gps.locate()
+local startDirection = turtle.getFacing()
+
+-- Move backward twice
+turtle.back()
+turtle.back()
+
+-- Move up one
+turtle.up()
+
+-- Turn right
+turtle.turnRight()
+
+-- Move forward one
+turtle.forward()
+
+-- Empty as much of the chest in front of it as possible
+emptyChest()
+
+-- Return to the starting position
+turtle.back()
+turtle.turnLeft()
+turtle.down()
+turtle.forward()
+turtle.forward()
+
+-- Deposit items into the chest in front of the starting position
+depositItems()
+
+-- Restore the initial orientation (if necessary)
+while turtle.getFacing() ~= startDirection do
+    turtle.turnRight()
+end
