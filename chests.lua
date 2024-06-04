@@ -241,9 +241,11 @@ end
 
 setup()
 
-for i = 1, #quarryChests do
-    emptyQuarryChest(i)
-end
+--for i = 1, #quarryChests do
+--    emptyQuarryChest(i)
+--end
 
 goTo(startX, startY, startZ)
 turnTo(startHeading)
+
+depositStorage()
