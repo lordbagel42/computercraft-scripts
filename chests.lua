@@ -37,36 +37,35 @@ local startHeading = heading
 
 -- Function to turn towards a specific heading
 local function turnTo(targetHeading)
-	while targetHeading ~= heading do
-		if targetHeading > heading then
-			turtle.turnLeft()
-			heading = heading + 1
-		else
-			turtle.turnRight()
-			heading = heading - 1
-		end
-		if heading == 4 then
-			heading = 0
-		elseif heading == -1 then
-			heading = 3
-		end
-	end
+    local diff = targetHeading - heading
+    if diff < 0 then
+        diff = diff + 4
+    end
+    if diff == 1 then
+        turtle.turnRight()
+    elseif diff == 2 then
+        turtle.turnRight()
+        turtle.turnRight()
+    elseif diff == 3 then
+        turtle.turnLeft()
+    end
+    heading = targetHeading
 end
 
 -- Function to move the turtle to a specific location
 local function goTo(targetX, targetY, targetZ)
-	local x, y, z = gps.locate()
+    local x, y, z = gps.locate()
     if z < targetZ then
         turnTo(2) -- north
         while z < targetZ do
-			print("Target Z: " .. targetZ .. " Current Z: " .. z)
+            print("Target Z: " .. targetZ .. " Current Z: " .. z)
             turtle.forward()
             x, y, z = gps.locate()
         end
     elseif z > targetZ then
         turnTo(0) -- south
         while z > targetZ do
-			print("Target Z: " .. targetZ .. " Current Z: " .. z)
+            print("Target Z: " .. targetZ .. " Current Z: " .. z)
             turtle.forward()
             x, y, z = gps.locate()
         end
@@ -75,14 +74,14 @@ local function goTo(targetX, targetY, targetZ)
     if x < targetX then
         turnTo(1) -- east
         while x < targetX do
-			print("Target X: " .. targetX .. " Current X: " .. x)
+            print("Target X: " .. targetX .. " Current X: " .. x)
             turtle.forward()
             x, y, z = gps.locate()
         end
     elseif x > targetX then
         turnTo(3) -- west
         while x > targetX do
-			print("Target X: " .. targetX .. " Current X: " .. x)
+            print("Target X: " .. targetX .. " Current X: " .. x)
             turtle.forward()
             x, y, z = gps.locate()
         end
@@ -91,14 +90,14 @@ local function goTo(targetX, targetY, targetZ)
     if y < targetY then
         -- no turning
         while y < targetY do
-			print("Target Y: " .. targetY .. " Current Y: " .. y)
+            print("Target Y: " .. targetY .. " Current Y: " .. y)
             turtle.up()
             x, y, z = gps.locate()
         end
     elseif y > targetY then
         -- no turning
         while y > targetY do
-			print("Target Y: " .. targetY .. " Current Y: " .. y)
+            print("Target Y: " .. targetY .. " Current Y: " .. y)
             turtle.down()
             x, y, z = gps.locate()
         end
@@ -165,21 +164,21 @@ local function depositItems()
 end
 
 local function home()
-	goTo(storageX, storageY, startZ)
-	turnTo(startHeading)
+    goTo(storageX, storageY, startZ)
+    turnTo(startHeading)
 end
 
 -- Function to go to a quarry chest and empty it. Mark if it has stuff or no.
 local function emptyQuarryChest(chest)
-	goTo(quarryChests[chest].x, quarryChests[chest].y, quarryChests[chest].z)
-	turnTo(chestDirection)
-	quarryChests[chest].empty = isChestEmpty()
-	while not quarryChests[chest].empty do
-		print("Chest " .. chest .. " still has items")
-		emptyChest()
-		home()
-		depositItems()
-	end
+    goTo(quarryChests[chest].x, quarryChests[chest].y, quarryChests[chest].z)
+    turnTo(chestDirection)
+    quarryChests[chest].empty = isChestEmpty()
+    while not quarryChests[chest].empty do
+        print("Chest " .. chest .. " still has items")
+        emptyChest()
+        home()
+        depositItems()
+    end
 end
 
 -- Function to deposit items into the chests
