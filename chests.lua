@@ -29,40 +29,20 @@ local quarryChests = {{
 local heading = 2 -- north = 0, east = 1, south = 2, west = 3
 local chestDirection = 3 -- Direction to face the chests
 local chestStatus = {} -- Table to keep track of which chests are full
-local startX, startY = 6, 1 -- Starting position of the turtle
+local storageX, storageY = 6, 1 -- Starting position of the turtle
 local row, col = 6, 3 -- Number of rows and columns in the chest grid
 local chests = {} -- Table to keep track of the size/status of chest grid
 
 local startHeading = heading
 
 -- Function to turn towards a specific heading
---[[
-local function turnTo(targetHeading)
-    local diff = targetHeading - heading
-    if diff < 0 then
-        diff = diff + 4
-    end
-
-    if diff == 1 then
-        turtle.turnRight()
-    elseif diff == 2 then
-        turtle.turnRight()
-        turtle.turnRight()
-    elseif diff == 3 then
-        turtle.turnLeft()
-    end
-
-    heading = targetHeading
-end
---]]
-
 local function turnTo(targetHeading)
 	while targetHeading ~= heading do
 		if targetHeading > heading then
-			turtle.turnRight()
+			turtle.turnLeft()
 			heading = heading + 1
 		else
-			turtle.turnLeft()
+			turtle.turnRight()
 			heading = heading - 1
 		end
 		if heading == 4 then
@@ -184,15 +164,21 @@ local function depositItems()
     end
 end
 
+local function home()
+	goTo(storageX, storageY, startZ)
+	turnTo(startHeading)
+end
+
 -- Function to go to a quarry chest and empty it. Mark if it has stuff or no.
 local function emptyQuarryChest(chest)
 	goTo(quarryChests[chest].x, quarryChests[chest].y, quarryChests[chest].z)
 	turnTo(chestDirection)
 	quarryChests[chest].empty = isChestEmpty()
-	if quarryChests[chest].empty then
-		print("Chest " .. chest .. ": empty")
-	else
-		print("Chest " .. chest .. ": has items")
+	while not quarryChests[chest].empty do
+		print("Chest " .. chest .. " still has items")
+		emptyChest()
+		home()
+		depositItems()
 	end
 end
 
