@@ -159,9 +159,16 @@ local function depositItems()
     end
 end
 
+-- Function to go to a quarry chest and empty it. Mark if it has stuff or no.
 local function emptyQuarryChest(chest)
-    goTo(outputChests[chest].x, outputChests[chest].y, outputChests[chest].z)
-    turnTo(chestDirection)
+	goTo(quarryChests[chest].x, quarryChests[chest].y, quarryChests[chest].z)
+	turnTo(chestDirection)
+	quarryChests[chest].empty = isChestEmpty()
+	if quarryChests[chest].empty then
+		print("Chest " .. chest .. ": empty")
+	else
+		print("Chest " .. chest .. ": full")
+	end
 end
 
 -- Function to deposit items into the chests
