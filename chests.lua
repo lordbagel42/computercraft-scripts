@@ -51,13 +51,13 @@ local function goTo(targetX, targetY, targetZ)
 	end
 
 	if z < targetZ then
-		turnTo(0) -- north
+		turnTo(2) -- north
 		while z < targetZ do
 			turtle.forward()
 			x, y, z = gps.locate()
 		end
 	elseif z > targetZ then
-		turnTo(2) -- south
+		turnTo(0) -- south
 		while z > targetZ do
 			turtle.back()
 			x, y, z = gps.locate()
@@ -77,7 +77,7 @@ local function emptyChest()
 end
 
 -- Function to check if the chest in front of the turtle is empty
-function isChestEmpty()
+local function isChestEmpty()
     -- Select the first slot to ensure we can use it
     turtle.select(1)
     
@@ -112,12 +112,17 @@ local function depositItems()
 end
 
 -- move next to quarry array
+local function setup()
+	goTo(100, 72, -33)
+end
+
+--[[
 turtle.back()
 turtle.back()
 turtle.up()
 turtle.turnRight()
 turtle.turnRight()
-
+--]]
 
 --[[
 local chest1 = isChestEmpty()
