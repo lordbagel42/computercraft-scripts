@@ -36,6 +36,7 @@ local chests = {} -- Table to keep track of the size/status of chest grid
 local startHeading = heading
 
 -- Function to turn towards a specific heading
+--[[
 local function turnTo(targetHeading)
     local diff = targetHeading - heading
     if diff < 0 then
@@ -52,6 +53,24 @@ local function turnTo(targetHeading)
     end
 
     heading = targetHeading
+end
+--]]
+
+local function turnTo(targetHeading)
+	while targetHeading ~= heading do
+		if targetHeading > heading then
+			turtle.turnRight()
+			heading = heading + 1
+		else
+			turtle.turnLeft()
+			heading = heading - 1
+		end
+		if heading == 4 then
+			heading = 0
+		elseif heading == -1 then
+			heading = 3
+		end
+	end
 end
 
 -- Function to move the turtle to a specific location
