@@ -9,17 +9,28 @@ local function emptyChest()
     end
 end
 
-local function checkEmpty()
-	local success, data = turtle.inspect()
-	if success and data.name == "minecraft:chest" then
-		for slot = 1, 32 do
-			if turtle.getItemCount(slot) > 0 then
-				return false -- Found a non-empty slot
-			end
-		end
-		return true -- All slots are empty
-	end
-	return false -- No chest found
+-- Function to check if the chest in front of the turtle is empty
+function isChestEmpty()
+    -- Select the first slot to ensure we can use it
+    turtle.select(1)
+    
+    -- Check if there is a chest in front
+    if turtle.detect() then
+        -- Attempt to suck an item from the chest
+        if turtle.suck() then
+            -- If an item was successfully sucked, the chest is not empty
+            -- Put the item back into the chest
+            turtle.drop()
+            return false
+        else
+            -- If no item was sucked, the chest is empty
+            return true
+        end
+    else
+        -- No chest in front
+        print("No chest in front")
+        return false
+    end
 end
 
 -- Function to deposit items into the chest in front
@@ -39,7 +50,7 @@ turtle.back()
 turtle.up()
 turtle.turnRight()
 turtle.forward()
-local chest1 = checkEmpty()
+local chest1 = isChestEmpty()
 if not chest1 then
 	emptyChest()
 end
