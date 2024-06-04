@@ -219,7 +219,7 @@ end
 local function depositStorage()
 	for i = 1, row do
 		for j = 1, col do
-			if chests[i][j].empty then
+			if not chests[i][j].full then
 				moveToChest(i, j)
 				depositItems()
 				print("Chest " .. i .. ", " .. j .. " has available space")
