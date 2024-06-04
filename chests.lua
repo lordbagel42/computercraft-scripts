@@ -1,3 +1,70 @@
+local x, y, z = gps.locate()
+local chests = {
+	{ name = "chest1", x = 99, y = 72, z = -33 },
+	{ name = "chest2", x = 99, y = 72, z = -41 },
+	{ name = "chest3", x = 99, y = 72, z = -49 },
+	{ name = "chest4", x = 99, y = 72, z = -57 }
+}
+
+-- north = 0, east = 1, south = 2, west = 3
+local heading = 2
+
+local function turnTo(targetHeading)
+	while heading < targetHeading do
+		turtle.turnRight()
+		heading = heading + 1
+	end
+	while heading > targetHeading do
+		turtle.turnLeft()
+		heading = heading - 1
+	end
+end
+
+local function goTo(targetX, targetY, targetZ)
+	local x, y, z = gps.locate()
+	if x < targetX then
+		turnTo(1) -- east
+		while x < targetX do
+			turtle.forward()
+			x, y, z = gps.locate()
+		end
+	elseif x > targetX then
+		turnTo(3) -- west
+		while x > targetX do
+			turtle.forward()
+			x, y, z = gps.locate()
+		end
+	end
+
+	if y < targetY then
+		-- no turning
+		while y < targetY do
+			turtle.up()
+			x, y, z = gps.locate()
+		end
+	elseif y > targetY then
+		-- no turning
+		while y > targetY do
+			turtle.down()
+			x, y, z = gps.locate()
+		end
+	end
+
+	if z < targetZ then
+		turnTo(0) -- north
+		while z < targetZ do
+			turtle.forward()
+			x, y, z = gps.locate()
+		end
+	elseif z > targetZ then
+		turnTo(2) -- south
+		while z > targetZ do
+			turtle.back()
+			x, y, z = gps.locate()
+		end
+	end
+end
+
 -- Function to check if there's a chest in front and empty it
 local function emptyChest()
     local success, data = turtle.inspect()
@@ -44,12 +111,15 @@ local function depositItems()
     end
 end
 
--- Initial steps: move backward twice, up one, turn right, move forward one
+-- move next to quarry array
 turtle.back()
 turtle.back()
 turtle.up()
 turtle.turnRight()
-turtle.forward()
+turtle.turnRight()
+
+
+--[[
 local chest1 = isChestEmpty()
 if not chest1 then
 	print("Chest 1: contains items.")
@@ -57,7 +127,10 @@ if not chest1 then
 else
 	print("Chest 1: Empty")
 end
+--]]
 
+turtle.turnLeft()
+turtle.turnLeft()
 turtle.back()
 turtle.down()
 turtle.turnLeft()
