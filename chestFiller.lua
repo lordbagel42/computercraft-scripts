@@ -32,9 +32,7 @@ local function depositItems()
 end
 
 -- random boolean generator
-local function randomBool()
-	return math.random(0, 1) == 1
-end
+local f
 
 for i = 1, row do
 	chests[i] = {}
@@ -44,5 +42,7 @@ for i = 1, row do
 end
 
 for i,line in ipairs(chests) do
-	print(line)
+	for j,chest in ipairs(line) do
+		print(chest)
+	end
 end

@@ -1,79 +1,103 @@
 local x, y, z = gps.locate()
 local startX, startY, startZ = x, y, z
-local chests = {
-	{ name = "chest1", x = 99, y = 72, z = -33 },
-	{ name = "chest2", x = 99, y = 72, z = -41 },
-	{ name = "chest3", x = 99, y = 72, z = -49 },
-	{ name = "chest4", x = 99, y = 72, z = -57 }
-}
+local quarryChests = {{
+    name = "chest1",
+    x = 99,
+    y = 72,
+    z = -33,
+    empty = false
+}, {
+    name = "chest2",
+    x = 99,
+    y = 72,
+    z = -41,
+    empty = false
+}, {
+    name = "chest3",
+    x = 99,
+    y = 72,
+    z = -49,
+    empty = false
+}, {
+    name = "chest4",
+    x = 99,
+    y = 72,
+    z = -57,
+    empty = false
+}}
 
-
--- north = 0, east = 1, south = 2, west = 3
-local heading = 2
+local heading = 2 -- north = 0, east = 1, south = 2, west = 3
+local chestDirection = 3 -- Direction to face the chests
+local chestStatus = {} -- Table to keep track of which chests are full
+local startX, startY = 6, 1 -- Starting position of the turtle
+local row, col = 6, 3 -- Number of rows and columns in the chest grid
+local chests = {} -- Table to keep track of the size/status of chest grid
 
 local startHeading = heading
 
+-- Function to turn towards a specific heading
 local function turnTo(targetHeading)
-	local diff = targetHeading - heading
-	if diff < 0 then
-		diff = diff + 4
-	end
+    local diff = targetHeading - heading
+    if diff < 0 then
+        diff = diff + 4
+    end
 
-	if diff == 1 then
-		turtle.turnRight()
-	elseif diff == 2 then
-		turtle.turnRight()
-		turtle.turnRight()
-	elseif diff == 3 then
-		turtle.turnLeft()
-	end
+    if diff == 1 then
+        turtle.turnRight()
+    elseif diff == 2 then
+        turtle.turnRight()
+        turtle.turnRight()
+    elseif diff == 3 then
+        turtle.turnLeft()
+    end
 
-	heading = targetHeading
+    heading = targetHeading
 end
 
+-- Function to move the turtle to a specific location
 local function goTo(targetX, targetY, targetZ)
-	if z < targetZ then
-		turnTo(2) -- north
-		while z < targetZ do
-			turtle.forward()
-			x, y, z = gps.locate()
-		end
-	elseif z > targetZ then
-		turnTo(0) -- south
-		while z > targetZ do
-			turtle.forward()
-			x, y, z = gps.locate()
-		end
-	end
+    if z < targetZ then
+        turnTo(2) -- north
+        while z < targetZ do
+            turtle.forward()
+            x, y, z = gps.locate()
+        end
+    elseif z > targetZ then
+        turnTo(0) -- south
+        while z > targetZ do
+            turtle.forward()
+            x, y, z = gps.locate()
+        end
+    end
 
-	local x, y, z = gps.locate()
-	if x < targetX then
-		turnTo(1) -- east
-		while x < targetX do
-			turtle.forward()
-			x, y, z = gps.locate()
-		end
-	elseif x > targetX then
-		turnTo(3) -- west
-		while x > targetX do
-			turtle.forward()
-			x, y, z = gps.locate()
-		end
-	end
+    local x, y, z = gps.locate()
+    if x < targetX then
+        turnTo(1) -- east
+        while x < targetX do
+            turtle.forward()
+            x, y, z = gps.locate()
+        end
+    elseif x > targetX then
+        turnTo(3) -- west
+        while x > targetX do
+            turtle.forward()
+            x, y, z = gps.locate()
+        end
+    end
 
-	if y < targetY then
-		-- no turning
-		while y < targetY do
-			turtle.up()
-			x, y, z = gps.locate()
-		end
-	elseif y > targetY then
-		-- no turning
-		while y > targetY do
-			turtle.down()
-			x, y, z = gps.locate()
-		end
-	end
+    if y < targetY then
+        -- no turning
+        while y < targetY do
+            turtle.up()
+            x, y, z = gps.locate()
+        end
+    elseif y > targetY then
+        -- no turning
+        while y > targetY do
+            turtle.down()
+            x, y, z = gps.locate()
+        end
+    end
 end
 
 -- Function to check if there's a chest in front and empty it
@@ -87,11 +111,24 @@ local function emptyChest()
     end
 end
 
+-- Function to check if a chest has open space
+local function hasSpace()
+    local success, data = turtle.inspect()
+    if success and data.name == "minecraft:chest" then
+        for slot = 1, 16 do
+            if turtle.getItemCount(slot) == 0 then
+                return true -- Found an empty slot
+            end
+        end
+    end
+    return false -- No empty slots found or not a chest
+end
+
 -- Function to check if the chest in front of the turtle is empty
 local function isChestEmpty()
     -- Select the first slot to ensure we can use it
     turtle.select(1)
-    
+
     -- Check if there is a chest in front
     if turtle.detect() then
         -- Attempt to suck an item from the chest
@@ -122,19 +159,39 @@ local function depositItems()
     end
 end
 
--- move next to quarry array
+local function emptyQuarryChest(chest)
+    goTo(outputChests[chest].x, outputChests[chest].y, outputChests[chest].z)
+    turnTo(chestDirection)
+end
+
+-- Function to deposit items into the chests
+local function depositItems()
+    local success, data = turtle.inspect()
+    if success and data.name == "minecraft:chest" then
+        for slot = 1, 16 do
+            turtle.select(slot)
+            turtle.drop()
+        end
+    end
+end
+
+-- setup functions
 local function setup()
-	goTo(100, 72, -33)
+    for i = 1, row do
+        chests[i] = {}
+        for j = 1, col do
+            chests[i][j] = randomBool
+        end
+    end
+    print("Table Initialized")
+    goTo(100, 72, -33)
 end
 
 setup()
-goTo(chests[1].x, chests[1].y, chests[1].z)
-turnTo(3)
-goTo(chests[2].x, chests[2].y, chests[2].z)
-turnTo(3)
-goTo(chests[3].x, chests[3].y, chests[3].z)
-turnTo(3)
-goTo(chests[4].x, chests[4].y, chests[4].z)
-turnTo(3)
+
+for i = 1, #quarryChests do
+    emptyQuarryChest(i)
+end
+
 goTo(startX, startY, startZ)
 turnTo(startHeading)
